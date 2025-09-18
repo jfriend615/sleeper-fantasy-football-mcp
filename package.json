@@ -1,0 +1,30 @@
+{
+  "name": "sleeper-fantasy-football-mcp",
+  "version": "1.0.0",
+  "description": "MCP Server for Sleeper Fantasy Football API",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "sleeper-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "node test-server.js",
+    "fetch-players": "node fetch-players.js",
+    "setup": "npm run fetch-players && npm run build"
+  },
+  "keywords": ["mcp", "sleeper", "fantasy-football", "api"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
