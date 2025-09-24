@@ -1,17 +1,14 @@
 import { writeFile, readFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
 
 export class PersistentCache {
   private cacheDir: string;
-  private playersFile: string;
 
   constructor() {
     // Check for environment variable first, then fall back to absolute path
     const projectRoot = process.env.MCP_PROJECT_ROOT || '/Users/jordanfreund/sleeper-fantasy-football-mcp';
     this.cacheDir = join(projectRoot, '.cache');
-    this.playersFile = join(this.cacheDir, 'players.json');
     this.ensureCacheDir();
   }
 

@@ -19,7 +19,6 @@ export class SleeperCache {
       return { ttl: 0, maxSize: 0 }; // Don't cache in memory
     }
 
-    if (endpoint.includes('/players/') && !endpoint.includes('/trending')) return CACHE_CONFIGS.players;
     if (endpoint.includes('/state/')) return CACHE_CONFIGS.nfl_state;
     if (endpoint.startsWith('/user/') && endpoint.includes('/leagues/')) return CACHE_CONFIGS.user_leagues;
     if (endpoint.startsWith('/user/') && endpoint.includes('/drafts/')) return CACHE_CONFIGS.user_drafts;
@@ -58,7 +57,6 @@ export class SleeperCache {
       return null;
     }
 
-    entry.hits++;
     return entry.data;
   }
 
@@ -70,13 +68,8 @@ export class SleeperCache {
       data,
       timestamp: Date.now(),
       ttl: config.ttl,
-      hits: 0,
     };
 
     this.cache.set(key, entry);
-  }
-
-  clear(): void {
-    this.cache.clear();
   }
 }
