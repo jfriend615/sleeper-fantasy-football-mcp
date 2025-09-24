@@ -1,6 +1,6 @@
 ---
 layout: page
-exclude: true
+title: ""
 ---
 
 # Current "Check My Balls" League Standings (2-0 through 0-2)
