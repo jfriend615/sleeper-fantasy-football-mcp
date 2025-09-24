@@ -9,8 +9,8 @@ theme: minima
 
 # Enable plugins
 plugins:
-  - jekyll-feed
-  - jekyll-sitemap
+  # - jekyll-feed
+  # - jekyll-sitemap
 
 # Markdown settings
 markdown: kramdown
