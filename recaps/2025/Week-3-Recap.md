@@ -1,3 +1,7 @@
+---
+layout: page
+---
+
 # "Check My Balls" League Week 3 Recap
 
 ### UNDEFEATED TITANS MAINTAIN PERFECT RECORDS AS LEAGUE SEPARATES INTO DISTINCT TIERS

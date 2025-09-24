@@ -1,3 +1,7 @@
+---
+layout: page
+---
+
 # Current "Check My Balls" League Standings (2-0 through 0-2)
 
 ## **THE UNDEFEATED ELITE (2-0):**
