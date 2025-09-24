@@ -4,8 +4,8 @@ description: "Fantasy football league recaps and analysis"
 baseurl: "/sleeper-fantasy-football-mcp"
 url: "https://jfriend615.github.io"
 
-# Use the default GitHub Pages theme
-theme: minima
+
+theme: Slate
 
 # Enable plugins
 plugins:
