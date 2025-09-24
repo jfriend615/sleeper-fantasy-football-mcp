@@ -1,5 +1,6 @@
 ---
 layout: page
+exclude: true
 ---
 
 # "Check My Balls" League Week 3 Recap
