@@ -1,4 +1,4 @@
-import { CacheEntry, CacheConfig, CacheStats } from './types.js';
+import { CacheEntry, CacheConfig } from './types.js';
 import { CACHE_CONFIGS } from './cache-config.js';
 
 export class SleeperCache {
@@ -13,14 +13,12 @@ export class SleeperCache {
     return `${endpoint}${sortedParams ? `?${sortedParams}` : ''}`;
   }
 
-  // Get cache config for endpoint
   private getCacheConfig(endpoint: string): CacheConfig {
     // Skip players - handled by persistent cache
     if (endpoint.includes('/players/') && !endpoint.includes('/trending')) {
       return { ttl: 0, maxSize: 0 }; // Don't cache in memory
     }
 
-    // Determine cache type from endpoint
     if (endpoint.includes('/players/') && !endpoint.includes('/trending')) return CACHE_CONFIGS.players;
     if (endpoint.includes('/state/')) return CACHE_CONFIGS.nfl_state;
     if (endpoint.startsWith('/user/') && endpoint.includes('/leagues/')) return CACHE_CONFIGS.user_leagues;
@@ -43,18 +41,10 @@ export class SleeperCache {
     return { ttl: 5 * 60 * 1000, maxSize: 100 };
   }
 
-  // Check if entry is expired
   private isExpired(entry: CacheEntry): boolean {
     return Date.now() - entry.timestamp > entry.ttl;
   }
 
-  // Check if entry should be refreshed
-  private shouldRefresh(entry: CacheEntry): boolean {
-    const age = Date.now() - entry.timestamp;
-    return age > entry.ttl;
-  }
-
-  // Get data from cache
   get(endpoint: string, params: Record<string, any> = {}): any | null {
     const key = this.generateKey(endpoint, params);
     const entry = this.cache.get(key);
@@ -84,15 +74,6 @@ export class SleeperCache {
     };
 
     this.cache.set(key, entry);
-  }
-
-  shouldRefreshEntry(endpoint: string, params: Record<string, any> = {}): boolean {
-    const key = this.generateKey(endpoint, params);
-    const entry = this.cache.get(key);
-
-    if (!entry || this.isExpired(entry)) return false;
-
-    return this.shouldRefresh(entry);
   }
 
   clear(): void {

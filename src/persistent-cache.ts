@@ -58,25 +58,4 @@ export class PersistentCache {
       return null;
     }
   }
-
-  // Check if players data exists and is fresh
-  async hasFreshPlayers(sport: string): Promise<boolean> {
-    const filePath = join(this.cacheDir, `players-${sport}.json`);
-
-    if (!existsSync(filePath)) {
-      return false;
-    }
-
-    try {
-      const content = await readFile(filePath, 'utf-8');
-      const cacheData = JSON.parse(content);
-
-      const age = Date.now() - cacheData.timestamp;
-      const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-
-      return age <= maxAge;
-    } catch (error) {
-      return false;
-    }
-  }
 }
