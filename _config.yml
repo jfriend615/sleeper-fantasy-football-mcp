@@ -5,7 +5,7 @@ baseurl: "/sleeper-fantasy-football-mcp"
 url: "https://jfriend615.github.io"
 
 
-theme: Slate
+theme: slate
 
 # Enable plugins
 plugins:
