@@ -1,5 +1,4 @@
-# THE FANTASY SPORTS TRIBUNE
-## Special Edition: "Check My Balls" League Week 3 Recap
+# "Check My Balls" League Week 3 Recap
 
 ### UNDEFEATED TITANS MAINTAIN PERFECT RECORDS AS LEAGUE SEPARATES INTO DISTINCT TIERS
 
@@ -32,19 +31,13 @@ The loss drops RegNitRaw to 1-2, continuing a disappointing slide from their sol
 
 **D4RTH's** Galactic Empire suffered their second consecutive defeat, managing just 90.18 points in a performance that would make Emperor Palpatine consider a coaching change. The Empire has now fallen to 1-2 despite early season promise.
 
-### DESPERATION IN THE CELLAR
-
-The week's most lopsided defeat belonged to **MairedINLionsFan's** "Married In Lions Fan," who mustered only 83.60 points in their loss to ItsApollo. The franchise has now dropped to 0-3, becoming the league's sole winless team despite posting a respectable 295.84 total points - clear evidence that schedule luck hasn't been on their side.
-
-**Kylashh** also struggled mightily, posting just 87.00 points in their loss to JHarron. After opening the season with high-scoring performances, Hold My Blount has now lost two straight and finds themselves at 1-2, raising questions about their ability to sustain their early pace.
-
 ### LOOKING AHEAD
 
 As the league enters Week 4, clear tiers have emerged. The undefeated duo of BrownCowboy18 and ItsApollo appear destined for playoff positioning, while the middle class of four 2-1 and 1-2 teams will battle for the remaining spots.
 
 At the bottom, MairedINLionsFan faces an uphill climb to relevancy, while several other teams desperately need to find consistency before their seasons slip away entirely.
 
-The "Check My Balls" league continues to live up to its name - it takes real courage to check the standings when you're struggling, and even more courage to keep competing in what's shaping up to be one of the most competitive seasons in recent memory.
+The "Check My Balls" league continues to live up to its name - it takes courage to check these standings.
 
 *The Fantasy Sports Tribune will continue monitoring this developing story as the 2025 season progresses.*
 
