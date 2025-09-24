@@ -1,0 +1,49 @@
+# GitHub Pages Configuration
+title: "Sleeper Fantasy Football Recaps"
+description: "Fantasy football league recaps and analysis"
+baseurl: "/sleeper-fantasy-football-mcp"
+url: "https://jfriend615.github.io"
+
+# Use the default GitHub Pages theme
+theme: minima
+
+# Enable plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Markdown settings
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# Include the recaps directory
+include:
+  - recaps
+
+# Collections for better organization
+collections:
+  recaps:
+    output: true
+    permalink: /:collection/:name/
+
+# Navigation
+navigation:
+  - title: "Home"
+    url: "/"
+  - title: "2025 Recaps"
+    url: "/recaps/2025/"
+
+# Exclude files that shouldn't be published
+exclude:
+  - node_modules
+  - src
+  - dist
+  - package.json
+  - package-lock.json
+  - tsconfig.json
+  - test-server.js
+  - fetch-players.js
+  - examples.js
