@@ -21,7 +21,7 @@ export const leagueTools = {
     handler: async (args: any) => {
       const { leagueId } = z.object({ leagueId: z.string() }).parse(args);
       const league = await makeSleeperRequest(`/league/${leagueId}`, { leagueId });
-      return formatJsonResponse('League Information', league);
+      return await formatJsonResponse('League Information', league);
     },
   },
 
@@ -43,7 +43,7 @@ export const leagueTools = {
     handler: async (args: any) => {
       const { leagueId } = z.object({ leagueId: z.string() }).parse(args);
       const rosters = await makeSleeperRequest(`/league/${leagueId}/rosters`, { leagueId });
-      return formatJsonResponse('League Rosters', rosters);
+      return await formatJsonResponse('League Rosters', rosters);
     },
   },
 
@@ -65,7 +65,7 @@ export const leagueTools = {
     handler: async (args: any) => {
       const { leagueId } = z.object({ leagueId: z.string() }).parse(args);
       const users = await makeSleeperRequest(`/league/${leagueId}/users`, { leagueId });
-      return formatJsonResponse('League Users', users);
+      return await formatJsonResponse('League Users', users);
     },
   },
 
@@ -94,7 +94,7 @@ export const leagueTools = {
         week: z.string()
       }).parse(args);
       const matchups = await makeSleeperRequest(`/league/${leagueId}/matchups/${week}`, { leagueId, week });
-      return formatJsonResponse(`League Matchups (Week ${week})`, matchups);
+      return await formatJsonResponse(`League Matchups (Week ${week})`, matchups);
     },
   },
 
@@ -116,7 +116,7 @@ export const leagueTools = {
     handler: async (args: any) => {
       const { leagueId } = z.object({ leagueId: z.string() }).parse(args);
       const bracket = await makeSleeperRequest(`/league/${leagueId}/bracket`, { leagueId });
-      return formatJsonResponse('Playoff Bracket', bracket);
+      return await formatJsonResponse('Playoff Bracket', bracket);
     },
   },
 
@@ -146,7 +146,7 @@ export const leagueTools = {
       }).parse(args);
       const endpoint = round ? `/league/${leagueId}/transactions/${round}` : `/league/${leagueId}/transactions`;
       const transactions = await makeSleeperRequest(endpoint, { leagueId, round });
-      return formatJsonResponse(`League Transactions${round ? ` (Round ${round})` : ''}`, transactions);
+      return await formatJsonResponse(`League Transactions${round ? ` (Round ${round})` : ''}`, transactions);
     },
   },
 
@@ -168,7 +168,7 @@ export const leagueTools = {
     handler: async (args: any) => {
       const { leagueId } = z.object({ leagueId: z.string() }).parse(args);
       const tradedPicks = await makeSleeperRequest(`/league/${leagueId}/traded_picks`, { leagueId });
-      return formatJsonResponse('Traded Picks', tradedPicks);
+      return await formatJsonResponse('Traded Picks', tradedPicks);
     },
   },
 
@@ -190,7 +190,7 @@ export const leagueTools = {
     handler: async (args: any) => {
       const { leagueId } = z.object({ leagueId: z.string() }).parse(args);
       const drafts = await makeSleeperRequest(`/league/${leagueId}/drafts`, { leagueId });
-      return formatJsonResponse('League Drafts', drafts);
+      return await formatJsonResponse('League Drafts', drafts);
     },
   },
 };

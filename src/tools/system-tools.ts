@@ -19,7 +19,7 @@ export const systemTools = {
     },
     handler: async (args: any) => {
       const state = await makeSleeperRequest('/state/nfl');
-      return formatJsonResponse('NFL State', state);
+      return await formatJsonResponse('NFL State', state);
     },
   },
 };

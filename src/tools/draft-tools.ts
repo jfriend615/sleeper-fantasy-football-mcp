@@ -21,7 +21,7 @@ export const draftTools = {
     handler: async (args: any) => {
       const { draftId } = z.object({ draftId: z.string() }).parse(args);
       const draft = await makeSleeperRequest(`/draft/${draftId}`, { draftId });
-      return formatJsonResponse('Draft Information', draft);
+      return await formatJsonResponse('Draft Information', draft);
     },
   },
 
@@ -43,7 +43,7 @@ export const draftTools = {
     handler: async (args: any) => {
       const { draftId } = z.object({ draftId: z.string() }).parse(args);
       const picks = await makeSleeperRequest(`/draft/${draftId}/picks`, { draftId });
-      return formatJsonResponse('Draft Picks', picks);
+      return await formatJsonResponse('Draft Picks', picks);
     },
   },
 
@@ -65,7 +65,7 @@ export const draftTools = {
     handler: async (args: any) => {
       const { draftId } = z.object({ draftId: z.string() }).parse(args);
       const tradedPicks = await makeSleeperRequest(`/draft/${draftId}/traded_picks`, { draftId });
-      return formatJsonResponse('Draft Traded Picks', tradedPicks);
+      return await formatJsonResponse('Draft Traded Picks', tradedPicks);
     },
   },
 };

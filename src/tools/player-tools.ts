@@ -36,7 +36,7 @@ export const playerTools = {
         sport: z.string().optional()
       }).parse(args);
       const players = await playerService.getPlayers(playerIds, sport);
-      return formatJsonResponse(`Players Information (${players.length} found)`, players);
+      return await formatJsonResponse(`Players Information (${players.length} found)`, players);
     },
   },
 
@@ -72,7 +72,7 @@ export const playerTools = {
         limit: z.string().optional()
       }).parse(args);
       const players = await playerService.searchPlayers(query, sport, parseInt(limit));
-      return formatJsonResponse(`Search Results for "${query}" (${players.length} players)`, players);
+      return await formatJsonResponse(`Search Results for "${query}" (${players.length} players)`, players);
     },
   },
 
@@ -108,7 +108,7 @@ export const playerTools = {
         limit: z.string().optional()
       }).parse(args);
       const players = await playerService.getPlayersByPosition(position, sport, parseInt(limit));
-      return formatJsonResponse(`Players by Position (${position})`, players);
+      return await formatJsonResponse(`Players by Position (${position})`, players);
     },
   },
 
@@ -144,7 +144,7 @@ export const playerTools = {
         limit: z.string().optional()
       }).parse(args);
       const players = await playerService.getPlayersByTeam(team, sport, parseInt(limit));
-      return formatJsonResponse(`Players by Team (${team})`, players);
+      return await formatJsonResponse(`Players by Team (${team})`, players);
     },
   },
 
@@ -189,7 +189,7 @@ export const playerTools = {
       const trending = await makeSleeperRequest(`/players/${sport}/trending/${type}?lookback_hours=${lookbackHours}&limit=${limit}`, {
         sport, type, lookbackHours, limit
       });
-      return formatJsonResponse('Trending Players', trending);
+      return await formatJsonResponse('Trending Players', trending);
     },
   },
 };

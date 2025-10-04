@@ -21,7 +21,7 @@ export const userTools = {
     handler: async (args: any) => {
       const { identifier } = z.object({ identifier: z.string() }).parse(args);
       const user = await makeSleeperRequest(`/user/${identifier}`);
-      return formatJsonResponse('User Information', user);
+      return await formatJsonResponse('User Information', user);
     },
   },
 
@@ -56,7 +56,7 @@ export const userTools = {
         season: z.string()
       }).parse(args);
       const leagues = await makeSleeperRequest(`/user/${userId}/leagues/${sport}/${season}`, { userId, sport, season });
-      return formatJsonResponse(`User Leagues (${sport} ${season})`, leagues);
+      return await formatJsonResponse(`User Leagues (${sport} ${season})`, leagues);
     },
   },
 
@@ -91,7 +91,7 @@ export const userTools = {
         season: z.string()
       }).parse(args);
       const drafts = await makeSleeperRequest(`/user/${userId}/drafts/${sport}/${season}`, { userId, sport, season });
-      return formatJsonResponse(`User Drafts (${sport} ${season})`, drafts);
+      return await formatJsonResponse(`User Drafts (${sport} ${season})`, drafts);
     },
   },
 };
