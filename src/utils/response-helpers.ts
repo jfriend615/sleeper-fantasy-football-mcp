@@ -1,8 +1,5 @@
-/**
- * Response formatting utilities for MCP tools with auto-enrichment
- */
-
 import { PlayerService } from '../player-service.js';
+import type { SleeperPlayer, Player } from '../types.js';
 
 const playerService = new PlayerService();
 
@@ -17,47 +14,108 @@ export interface ToolResponse {
 /**
  * Extract only fantasy-relevant fields from a player object
  */
-function extractPlayerInfo(player: any): any {
+function extractPlayerInfo(player: SleeperPlayer): Player | null {
   if (!player) return null;
 
-  return {
+  const team = player.team || 'FA';
+
+  const enrichedPlayer: Player = {
     player_id: player.player_id,
     full_name: player.full_name,
     position: player.position,
-    team: player.team || 'FA',
+    team: team,
     status: player.status,
     number: player.number,
+
+    // Injury Information (available from Sleeper)
     injury_status: player.injury_status,
+    injury_body_part: player.injury_body_part,
     injury_notes: player.injury_notes,
-    years_exp: player.years_exp,
-    age: player.age,
+    injury_start_date: player.injury_start_date,
+    practice_participation: player.practice_participation,
+    practice_description: player.practice_description,
+
+    // Depth Chart
     depth_chart_position: player.depth_chart_position,
     depth_chart_order: player.depth_chart_order,
+
+    // Additional Context
+    years_exp: player.years_exp,
+    age: player.age,
   };
+
+  // Add warning flags for critical conditions
+  if (player.injury_status && ['Out', 'IR', 'PUP', 'Suspended'].includes(player.injury_status)) {
+    enrichedPlayer.availability_warning = `⚠️ ${player.injury_status}`;
+  } else if (player.injury_status === 'Questionable') {
+    enrichedPlayer.availability_warning = '⚠️ Game-time decision';
+  } else if (player.injury_status === 'Doubtful') {
+    enrichedPlayer.availability_warning = '⚠️ Unlikely to play';
+  }
+
+  return enrichedPlayer;
 }
 
+/**
+ * Check if a value looks like a player ID (not team defense or user ID)
+ */
 function looksLikePlayerId(value: any): boolean {
-  return typeof value === 'string' && /^\d{1,10}$/.test(value);
+  if (typeof value !== 'string') return false;
+
+  // Must be numeric string, 1-10 digits
+  if (!/^\d{1,10}$/.test(value)) return false;
+
+  // Filter out common non-player IDs (single digits are usually roster IDs)
+  const nonPlayerIds = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  if (nonPlayerIds.includes(value)) return false;
+
+  return true;
 }
 
+/**
+ * Check if a value is a team defense (3-letter team abbreviation)
+ */
+function isTeamDefense(value: any): boolean {
+  if (typeof value !== 'string') return false;
+  return /^[A-Z]{2,3}$/.test(value) && value.length <= 3;
+}
+
+/**
+ * Recursively find and collect all player IDs in an object
+ * Based on Sleeper API documentation structure
+ */
 function collectPlayerIds(obj: any, ids: Set<string> = new Set()): Set<string> {
   if (Array.isArray(obj)) {
     obj.forEach(item => collectPlayerIds(item, ids));
   } else if (obj && typeof obj === 'object') {
     for (const [key, value] of Object.entries(obj)) {
-      if (['player_id', 'players', 'starters', 'reserve', 'taxi'].includes(key)) {
+
+      // Known player ID fields from Sleeper API docs
+      if (['players', 'starters', 'reserve', 'taxi'].includes(key)) {
         if (Array.isArray(value)) {
           value.forEach(v => {
-            if (looksLikePlayerId(v) && v !== '0') ids.add(v);
+            if (looksLikePlayerId(v) && !isTeamDefense(v)) {
+              ids.add(v);
+            }
           });
-        } else if (looksLikePlayerId(value)) {
-          ids.add(value as string);
         }
       }
+      // Single player ID fields
+      else if (key === 'player_id' && looksLikePlayerId(value)) {
+        ids.add(value as string);
+      }
+      // Players points object - keys are player IDs
       else if (key === 'players_points' && typeof value === 'object' && value !== null) {
         Object.keys(value).forEach(id => {
-          if (looksLikePlayerId(id)) ids.add(id);
+          if (looksLikePlayerId(id)) {
+            ids.add(id);
+          }
         });
+      }
+      // Skip known non-player ID fields
+      else if (['picked_by', 'roster_id', 'owner_id', 'user_id', 'league_id', 'draft_id'].includes(key)) {
+        // These are user/roster/league IDs, not player IDs
+        continue;
       }
       else {
         collectPlayerIds(value, ids);
@@ -67,7 +125,11 @@ function collectPlayerIds(obj: any, ids: Set<string> = new Set()): Set<string> {
   return ids;
 }
 
-async function enrichObject(obj: any, playerMap: Map<string, any>): Promise<any> {
+/**
+ * Recursively enrich an object with minimal player data
+ * Based on Sleeper API response structure
+ */
+async function enrichObject(obj: any, playerMap: Map<string, SleeperPlayer>): Promise<any> {
   if (Array.isArray(obj)) {
     return Promise.all(obj.map(item => enrichObject(item, playerMap)));
   }
@@ -79,40 +141,53 @@ async function enrichObject(obj: any, playerMap: Map<string, any>): Promise<any>
   const enriched: any = {};
 
   for (const [key, value] of Object.entries(obj)) {
-    if (key === 'players' && Array.isArray(value)) {
+
+    // Enrich roster arrays (from /league/{id}/rosters)
+    if (['players', 'starters', 'reserve', 'taxi'].includes(key) && Array.isArray(value)) {
       enriched[key] = value;
-      enriched['players_enriched'] = value
-        .filter(id => id !== '0')
-        .map(id => extractPlayerInfo(playerMap.get(id)))
-        .filter(p => p !== null);
+
+      // Filter out team defenses and empty slots, then enrich
+      const playerIds = value.filter(id =>
+        looksLikePlayerId(id) && !isTeamDefense(id) && id !== '0'
+      );
+
+      if (playerIds.length > 0) {
+        enriched[`${key}_enriched`] = playerIds
+          .map(id => {
+            const player = playerMap.get(id);
+            return player ? extractPlayerInfo(player) : null;
+          })
+          .filter(p => p !== null);
+      }
     }
-    else if (key === 'starters' && Array.isArray(value)) {
-      enriched[key] = value;
-      enriched['starters_enriched'] = value
-        .filter(id => id !== '0')
-        .map(id => extractPlayerInfo(playerMap.get(id)))
-        .filter(p => p !== null);
-    }
-    else if (key === 'reserve' && Array.isArray(value)) {
-      enriched[key] = value;
-      enriched['reserve_enriched'] = value
-        .filter(id => id !== '0')
-        .map(id => extractPlayerInfo(playerMap.get(id)))
-        .filter(p => p !== null);
-    }
+    // Enrich single player ID (from draft picks, trending players)
     else if (key === 'player_id' && looksLikePlayerId(value)) {
       enriched[key] = value;
-      enriched['player_info'] = extractPlayerInfo(playerMap.get(value as string));
+      const player = playerMap.get(value as string);
+      enriched['player_info'] = player ? extractPlayerInfo(player) : null;
     }
+    // Enrich players_points (from matchups)
     else if (key === 'players_points' && typeof value === 'object' && value !== null) {
       enriched[key] = value;
-      enriched['players_with_points'] = Object.entries(value)
-        .map(([id, points]) => ({
-          ...extractPlayerInfo(playerMap.get(id)),
-          points,
-        }))
-        .filter(p => p.player_id)
+
+      // Create enriched array with player info + points
+      const playersWithPoints = Object.entries(value)
+        .filter(([id]) => looksLikePlayerId(id))
+        .map(([id, points]) => {
+          const player = playerMap.get(id);
+          const playerInfo = player ? extractPlayerInfo(player) : null;
+          return playerInfo ? { ...playerInfo, points } : null;
+        })
+        .filter((p): p is Player & { points: unknown } => p !== null && 'player_id' in p)
         .sort((a, b) => (b.points as number) - (a.points as number));
+
+      if (playersWithPoints.length > 0) {
+        enriched['players_with_points'] = playersWithPoints;
+      }
+    }
+    // Skip enriching known non-player fields
+    else if (['picked_by', 'roster_id', 'owner_id', 'user_id', 'league_id', 'draft_id'].includes(key)) {
+      enriched[key] = value;
     }
     else {
       enriched[key] = await enrichObject(value, playerMap);
@@ -139,7 +214,7 @@ export async function formatJsonResponse(title: string, data: any): Promise<Tool
 
     const players = await playerService.getPlayers(Array.from(playerIds));
 
-    const playerMap = new Map();
+    const playerMap = new Map<string, SleeperPlayer>();
     Array.from(playerIds).forEach((id, index) => {
       if (players[index]) {
         playerMap.set(id, players[index]);

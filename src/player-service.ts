@@ -1,4 +1,5 @@
 import { PersistentCache } from './persistent-cache.js';
+import type { SleeperPlayer } from './types.js';
 
 export class PlayerService {
   private persistentCache: PersistentCache;
@@ -7,11 +8,11 @@ export class PlayerService {
     this.persistentCache = new PersistentCache();
   }
 
-  private async loadPlayers(sport: string): Promise<any | null> {
+  private async loadPlayers(sport: string): Promise<Record<string, SleeperPlayer> | null> {
     return await this.persistentCache.loadPlayers(sport);
   }
 
-  async getPlayer(playerId: string, sport: string = 'nfl'): Promise<any | null> {
+  async getPlayer(playerId: string, sport: string = 'nfl'): Promise<SleeperPlayer | null> {
     const players = await this.loadPlayers(sport);
     if (!players) {
       throw new Error('Players data not available. Please run fetch-players.js first.');
@@ -19,7 +20,7 @@ export class PlayerService {
     return players[playerId] || null;
   }
 
-  async getPlayers(playerIds: string[], sport: string = 'nfl'): Promise<any[]> {
+  async getPlayers(playerIds: string[], sport: string = 'nfl'): Promise<SleeperPlayer[]> {
     const players = await this.loadPlayers(sport);
     if (!players) {
       throw new Error('Players data not available. Please run fetch-players.js first.');
@@ -27,17 +28,17 @@ export class PlayerService {
 
     return playerIds
       .map(id => players[id])
-      .filter(player => player !== undefined); // Filter out any missing players
+      .filter((player): player is SleeperPlayer => player !== undefined); // Filter out any missing players
   }
 
-  async searchPlayers(query: string, sport: string = 'nfl', limit: number = 10): Promise<any[]> {
+  async searchPlayers(query: string, sport: string = 'nfl', limit: number = 10): Promise<SleeperPlayer[]> {
     const players = await this.loadPlayers(sport);
     if (!players) {
       throw new Error('Players data not available. Please run fetch-players.js first.');
     }
 
     const results = Object.values(players)
-      .filter((player: any) =>
+      .filter((player: SleeperPlayer) =>
         player.full_name?.toLowerCase().includes(query.toLowerCase()) ||
         player.first_name?.toLowerCase().includes(query.toLowerCase()) ||
         player.last_name?.toLowerCase().includes(query.toLowerCase())
@@ -47,27 +48,27 @@ export class PlayerService {
     return results;
   }
 
-  async getPlayersByPosition(position: string, sport: string = 'nfl', limit: number = 50): Promise<any[]> {
+  async getPlayersByPosition(position: string, sport: string = 'nfl', limit: number = 50): Promise<SleeperPlayer[]> {
     const players = await this.loadPlayers(sport);
     if (!players) {
       throw new Error('Players data not available. Please run fetch-players.js first.');
     }
 
     const results = Object.values(players)
-      .filter((player: any) => player.position === position)
+      .filter((player: SleeperPlayer) => player.position === position)
       .slice(0, limit);
 
     return results;
   }
 
-  async getPlayersByTeam(team: string, sport: string = 'nfl', limit: number = 50): Promise<any[]> {
+  async getPlayersByTeam(team: string, sport: string = 'nfl', limit: number = 50): Promise<SleeperPlayer[]> {
     const players = await this.loadPlayers(sport);
     if (!players) {
       throw new Error('Players data not available. Please run fetch-players.js first.');
     }
 
     const results = Object.values(players)
-      .filter((player: any) => player.team === team)
+      .filter((player: SleeperPlayer) => player.team === team)
       .slice(0, limit);
 
     return results;
