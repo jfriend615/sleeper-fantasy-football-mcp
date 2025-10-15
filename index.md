@@ -11,6 +11,7 @@ Welcome to the fantasy football recap hub! Here you'll find all the latest leagu
 
 - [Weeks 1 and 2](recaps/2025/Weeks-1-and-2.html)
 - [Week 3 Recap](recaps/2025/Week-3-Recap.html)
+- [Week 6 Recap](recaps/2025/Week-6-Recap.html)
 
 ---
 
