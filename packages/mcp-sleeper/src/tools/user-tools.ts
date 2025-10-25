@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { makeSleeperRequest } from '../api-service.js';
-import { formatJsonResponse } from '../utils/response-helpers.js';
+import { formatJsonResponse } from '../../../../src/utils/response-helpers';
+import { makeSleeperRequest } from '../../../../src/api-service';
 
 export const userTools = {
   get_user: {

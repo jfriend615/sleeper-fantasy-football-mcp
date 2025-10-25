@@ -1,5 +1,5 @@
-import { SleeperCache } from './cache.js';
-import { PersistentCache } from './persistent-cache.js';
+import { SleeperCache } from './cache';
+import { PersistentCache } from './persistent-cache';
 
 // Global cache instances
 const cache = new SleeperCache();

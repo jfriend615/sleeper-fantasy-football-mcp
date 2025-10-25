@@ -8,6 +8,10 @@ yarn-error.log*
 dist/
 *.tsbuildinfo
 
+# Next.js
+.next/
+out/
+
 # Cache files
 .cache/
 

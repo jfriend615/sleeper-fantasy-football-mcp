@@ -1,5 +1,5 @@
-import { PersistentCache } from './persistent-cache.js';
-import type { SleeperPlayer } from './types.js';
+import { PersistentCache } from './persistent-cache';
+import type { SleeperPlayer } from './types';
 
 export class PlayerService {
   private persistentCache: PersistentCache;

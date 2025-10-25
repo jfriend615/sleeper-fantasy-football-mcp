@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { makeSleeperRequest } from '../api-service.js';
-import { PlayerService } from '../player-service.js';
-import { formatJsonResponse } from '../utils/response-helpers.js';
+import { formatJsonResponse } from '../../../../src/utils/response-helpers';
+import { makeSleeperRequest } from '../../../../src/api-service';
+import { PlayerService } from '../../../../src/player-service';
 
 // Initialize player service
 const playerService = new PlayerService();

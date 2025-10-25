@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { Server } from '@modelcontextprotocol/sdk/server/index';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
-import { getAllTools, callTool } from './tools/index.js';
+} from '@modelcontextprotocol/sdk/types';
+import { getAllTools, callTool } from '../packages/mcp-sleeper/src/tools/index';
 
 // Define the server
 const server = new Server(

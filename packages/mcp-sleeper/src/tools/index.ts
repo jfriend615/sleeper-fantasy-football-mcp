@@ -1,8 +1,8 @@
-import { userTools } from './user-tools.js';
-import { leagueTools } from './league-tools.js';
-import { playerTools } from './player-tools.js';
-import { draftTools } from './draft-tools.js';
-import { systemTools } from './system-tools.js';
+import { userTools } from './user-tools';
+import { leagueTools } from './league-tools';
+import { playerTools } from './player-tools';
+import { draftTools } from './draft-tools';
+import { systemTools } from './system-tools';
 
 // Define the tool structure type
 interface ToolDefinition {
