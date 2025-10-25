@@ -1,5 +1,5 @@
 {
-  "name": "fantasy-web",
+  "name": "@sleeper-fantasy-football/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
