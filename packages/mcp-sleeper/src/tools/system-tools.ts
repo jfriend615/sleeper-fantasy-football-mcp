@@ -1,5 +1,4 @@
-import { formatJsonResponse } from '../../../../src/utils/response-helpers';
-import { makeSleeperRequest } from '../../../../src/api-service';
+import { formatJsonResponse, makeSleeperRequest } from '@sleeper-fantasy-football/core';
 
 export const systemTools = {
   get_nfl_state: {

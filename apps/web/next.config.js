@@ -4,7 +4,10 @@ const nextConfig = {
     externalDir: true,
     serverComponentsExternalPackages: ['@modelcontextprotocol/sdk'],
   },
-  transpilePackages: ['@sleeper-fantasy-football/mcp-sleeper'],
+  transpilePackages: [
+    '@sleeper-fantasy-football/core',
+    '@sleeper-fantasy-football/mcp-sleeper',
+  ],
 }
 
 module.exports = nextConfig
