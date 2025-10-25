@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { timingSafeEqual } from 'crypto';
-import { getAllTools, callTool } from '../../../../../packages/mcp-sleeper/src';
+import { getAllTools, callTool } from '@sleeper-fantasy-football/mcp-sleeper';
 
 export const runtime = 'nodejs'; // Use 'edge' only if all deps are edge-safe
 
