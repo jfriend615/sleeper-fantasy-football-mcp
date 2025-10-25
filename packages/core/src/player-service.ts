@@ -1,21 +1,36 @@
-import { PersistentCache } from './persistent-cache';
+import { UpstashCache } from './upstash-cache';
 import type { SleeperPlayer } from './types';
 
 export class PlayerService {
-  private persistentCache: PersistentCache;
+  private upstashCache: UpstashCache;
 
   constructor() {
-    this.persistentCache = new PersistentCache();
+    this.upstashCache = new UpstashCache();
+  }
+
+  private async fetchFromSleeper(sport: string): Promise<Record<string, SleeperPlayer>> {
+    const response = await fetch(`https://api.sleeper.app/v1/players/${sport}`);
+    if (!response.ok) throw new Error(`Failed to fetch players: ${response.statusText}`);
+    return await response.json() as Record<string, SleeperPlayer>;
   }
 
   private async loadPlayers(sport: string): Promise<Record<string, SleeperPlayer> | null> {
-    return await this.persistentCache.loadPlayers(sport);
+    // Try cache first
+    let players = await this.upstashCache.loadPlayers(sport);
+
+    // If cache miss, fetch and cache
+    if (!players) {
+      players = await this.fetchFromSleeper(sport);
+      await this.upstashCache.savePlayers(sport, players);
+    }
+
+    return players;
   }
 
   async getPlayer(playerId: string, sport: string = 'nfl'): Promise<SleeperPlayer | null> {
     const players = await this.loadPlayers(sport);
     if (!players) {
-      throw new Error('Players data not available. Please run fetch-players.js first.');
+      throw new Error('Failed to load players data from cache or API.');
     }
     return players[playerId] || null;
   }
@@ -23,7 +38,7 @@ export class PlayerService {
   async getPlayers(playerIds: string[], sport: string = 'nfl'): Promise<SleeperPlayer[]> {
     const players = await this.loadPlayers(sport);
     if (!players) {
-      throw new Error('Players data not available. Please run fetch-players.js first.');
+      throw new Error('Failed to load players data from cache or API.');
     }
 
     return playerIds
@@ -34,7 +49,7 @@ export class PlayerService {
   async searchPlayers(query: string, sport: string = 'nfl', limit: number = 10): Promise<SleeperPlayer[]> {
     const players = await this.loadPlayers(sport);
     if (!players) {
-      throw new Error('Players data not available. Please run fetch-players.js first.');
+      throw new Error('Failed to load players data from cache or API.');
     }
 
     const results = Object.values(players)
@@ -51,7 +66,7 @@ export class PlayerService {
   async getPlayersByPosition(position: string, sport: string = 'nfl', limit: number = 50): Promise<SleeperPlayer[]> {
     const players = await this.loadPlayers(sport);
     if (!players) {
-      throw new Error('Players data not available. Please run fetch-players.js first.');
+      throw new Error('Failed to load players data from cache or API.');
     }
 
     const results = Object.values(players)
@@ -64,7 +79,7 @@ export class PlayerService {
   async getPlayersByTeam(team: string, sport: string = 'nfl', limit: number = 50): Promise<SleeperPlayer[]> {
     const players = await this.loadPlayers(sport);
     if (!players) {
-      throw new Error('Players data not available. Please run fetch-players.js first.');
+      throw new Error('Failed to load players data from cache or API.');
     }
 
     const results = Object.values(players)
