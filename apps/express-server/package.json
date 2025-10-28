@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
+    "prebuild": "npm run build --workspace=@sleeper-fantasy-football/core && npm run build --workspace=@sleeper-fantasy-football/mcp-sleeper",
     "build": "tsc",
     "start": "node dist/server.js"
   },
