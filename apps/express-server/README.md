@@ -142,15 +142,3 @@ Express Server
 ├── McpServer (registers tools)
 └── @sleeper-fantasy-football/mcp-sleeper (tool implementations)
 ```
-
-## Comparison with Next.js Version
-
-| Feature | Express | Next.js App Router |
-|---------|---------|-------------------|
-| SDK Transport | ✅ Full support | ❌ Manual implementation |
-| Streaming | ✅ Yes | ❌ No |
-| Sessions | ✅ Yes | ❌ No |
-| Client Compatibility | ✅ All clients | ⚠️ Limited |
-| Deploy Target | Railway/Fly/Render | Vercel |
-
-**Recommendation**: Use this Express version for production hosting.
