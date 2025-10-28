@@ -1,9 +1,9 @@
 import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
-import { timingSafeEqual } from 'crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { getAllTools, callTool } from '@sleeper-fantasy-football/mcp-sleeper';
+import { createRegisterHandler, validateToken } from './controllers/remote.js';
 
 const app = express();
 app.use(express.json());
@@ -16,21 +16,14 @@ if (!MCP_AUTH_TOKEN) {
   process.exit(1);
 }
 
-// Bearer token authentication middleware
+// Authentication middleware for /mcp - accepts Bearer header or ?token query param
 app.use('/mcp', (req: Request, res: Response, next: NextFunction) => {
-  const auth = req.headers.authorization || '';
+  const header = req.headers.authorization || '';
+  const bearer = header.startsWith('Bearer ') ? header.slice(7) : undefined;
+  const qToken = typeof req.query.token === 'string' ? req.query.token : undefined;
+  const token = bearer ?? qToken;
 
-  // Fast-fail on malformed auth
-  if (!auth.startsWith('Bearer ') || auth.length !== `Bearer ${MCP_AUTH_TOKEN}`.length) {
-    return res.status(401).set('WWW-Authenticate', 'Bearer').send('Unauthorized');
-  }
-
-  // Timing-safe token comparison
-  const token = auth.slice(7);
-  const bufA = Buffer.from(token);
-  const bufB = Buffer.from(MCP_AUTH_TOKEN);
-
-  if (bufA.length !== bufB.length || !timingSafeEqual(bufA, bufB)) {
+  if (!validateToken(token, MCP_AUTH_TOKEN)) {
     return res.status(401).set('WWW-Authenticate', 'Bearer').send('Unauthorized');
   }
 
@@ -68,6 +61,15 @@ app.post('/mcp', async (req: Request, res: Response) => {
   await server.connect(transport);
   await transport.handleRequest(req as any, res as any, req.body);
 });
+
+// Gated /register endpoint - requires ?reg=SECRET
+app.post(
+  '/register',
+  createRegisterHandler({
+    getBaseUrl: (req) => `${req.protocol}://${req.get('host')}`,
+    registrationSecret: MCP_AUTH_TOKEN
+  })
+);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
