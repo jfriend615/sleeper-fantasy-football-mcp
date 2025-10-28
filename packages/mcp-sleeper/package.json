@@ -1,6 +1,7 @@
 {
   "name": "@sleeper-fantasy-football/mcp-sleeper",
   "version": "1.0.0",
+  "type": "module",
   "description": "Sleeper Fantasy Football MCP Tools",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
