@@ -15,10 +15,19 @@ export function createRegisterHandler(opts: {
   registrationSecret: string;
 }) {
   return function register(req: Request, res: Response) {
+    // Debug logging
+    console.error('[/register] Query params:', req.query);
+    console.error('[/register] Headers:', req.headers);
+    console.error('[/register] Body:', req.body);
+
     // Require ?reg=SECRET to mint a usable transport URL
     const provided = typeof req.query.reg === 'string' ? req.query.reg : undefined;
     if (!validateToken(provided, opts.registrationSecret)) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      console.error('[/register] Auth failed - no valid ?reg= param');
+      return res.status(401).json({
+        error: 'Unauthorized',
+        debug: { hasRegParam: !!provided, queryKeys: Object.keys(req.query) }
+      });
     }
 
     const base = opts.getBaseUrl(req);
