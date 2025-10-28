@@ -1,4 +1,4 @@
-import { CacheConfig } from './types';
+import { CacheConfig } from './types.js';
 
 // Cache configurations for different data types
 export const CACHE_CONFIGS: Record<string, CacheConfig> = {

@@ -1,5 +1,5 @@
-import { CacheEntry, CacheConfig } from './types';
-import { CACHE_CONFIGS } from './cache-config';
+import { CacheEntry, CacheConfig } from './types.js';
+import { CACHE_CONFIGS } from './cache-config.js';
 
 export class SleeperCache {
   private cache = new Map<string, CacheEntry>();

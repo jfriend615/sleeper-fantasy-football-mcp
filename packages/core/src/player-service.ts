@@ -1,5 +1,5 @@
-import { UpstashCache } from './upstash-cache';
-import type { SleeperPlayer } from './types';
+import { UpstashCache } from './upstash-cache.js';
+import type { SleeperPlayer } from './types.js';
 
 export class PlayerService {
   private upstashCache: UpstashCache;
