@@ -1,5 +1,5 @@
-import { PlayerService } from '../player-service';
-import type { SleeperPlayer, Player } from '../types';
+import { PlayerService } from '../player-service.js';
+import type { SleeperPlayer, Player } from '../types.js';
 
 const playerService = new PlayerService();
 
